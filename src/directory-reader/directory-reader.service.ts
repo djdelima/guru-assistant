@@ -3,7 +3,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { promisify } from 'util';
 import { FileFilterService } from '../file-filter/file-filter.service';
-import { ContentExtractionService } from '../extractors/content-extraction/content-extraction.service';
 
 const readdir = promisify(fs.readdir);
 const readFile = promisify(fs.readFile);
@@ -11,14 +10,12 @@ const readFile = promisify(fs.readFile);
 @Injectable()
 export class DirectoryReaderService {
   private fileFilterService: FileFilterService;
-  private contentExtractionService: ContentExtractionService;
 
   constructor() {
     this.fileFilterService = new FileFilterService(
       ['.js', '.ts', '.jsx', '.tsx', '.md', '.txt', '.html'],
       ['node_modules', '.git', '.idea'],
     );
-    this.contentExtractionService = new ContentExtractionService([]);
   }
 
   async readProjectDirectory(dirPath: string): Promise<string[]> {

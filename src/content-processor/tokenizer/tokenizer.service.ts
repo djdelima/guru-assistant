@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import * as esprima from 'esprima';
+import { parse } from '@typescript-eslint/parser';
 
 @Injectable()
 export class TokenizerService {
@@ -11,7 +11,13 @@ export class TokenizerService {
 
   private tokenizeSingleCodeBlock(codeBlock: string): TokenizedCode {
     try {
-      const tokens = esprima.tokenize(codeBlock);
+      const ast = parse(codeBlock, {
+        sourceType: 'module',
+        ecmaFeatures: {
+          jsx: true,
+        },
+      });
+      const tokens = ast.tokens;
       return {
         success: true,
         codeBlock,
@@ -30,6 +36,6 @@ export class TokenizerService {
 export interface TokenizedCode {
   success: boolean;
   codeBlock: string;
-  tokens?: esprima.Token[];
+  tokens?: any[]; // Change the type to any[] as the token format is different than esprima.Token
   error?: string;
 }

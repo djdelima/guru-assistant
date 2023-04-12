@@ -13,7 +13,9 @@ export class ContentProcessorService {
     private readonly projectSummaryService: ProjectSummaryService,
   ) {}
 
-  async processContent(contents: string[]): Promise<string[]> {
+  async processContent(
+    contents: string[],
+  ): Promise<{ role: string; content: string }[]> {
     const { codeBlocks, declarations, importsExports, readmeContent } =
       await this.contentExtractionService.extractMeaningfulContent(contents);
 
@@ -39,7 +41,7 @@ export class ContentProcessorService {
     const maxTokens = 4096;
     const inputChunks = this.splitInputIntoChunks(combinedInput, maxTokens);
 
-    return inputChunks;
+    return inputChunks.map((chunk) => this.formatMessage(chunk));
   }
 
   private prepareInputForGpt(
@@ -81,5 +83,12 @@ export class ContentProcessorService {
     }
 
     return chunks;
+  }
+
+  private formatMessage(chunk: string): { role: string; content: string } {
+    return {
+      role: 'user',
+      content: chunk,
+    };
   }
 }

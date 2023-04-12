@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { DirectoryReaderService } from './directory-reader.service';
 
 @Module({
-  providers: [DirectoryReaderService]
+  providers: [DirectoryReaderService],
+  exports: [DirectoryReaderService],
 })
 export class DirectoryReaderModule {}

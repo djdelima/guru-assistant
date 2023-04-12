@@ -3,15 +3,17 @@ import { ChatGPT } from './chat-gpt.interface';
 import axios from 'axios';
 
 @Injectable()
-export class Gpt3_5Service implements ChatGPT {
-  private readonly apiEndpoint =
-    'https://api.openai.com/v1/engines/davinci-codex/completions';
-  private readonly apiKey = 'your-api-key'; // Replace with your actual API key
+export class Gpt3_5Service {
+  private readonly apiEndpoint = 'https://api.openai.com/v1/chat/completions';
+  private readonly apiKey = 'your-key'; // Replace with your actual API key
 
-  async sendToGpt(inputChunks: string[]): Promise<string[]> {
+  async sendToGpt(
+    messages: { role: string; content: string }[],
+  ): Promise<string> {
     const data = {
-      model: 'davinci-codex',
-      documents: inputChunks,
+      model: 'gpt-3.5-turbo',
+      messages: messages,
+      max_tokens: 500, // Adjust this value based on the desired response length
     };
 
     const config = {
@@ -21,7 +23,14 @@ export class Gpt3_5Service implements ChatGPT {
       },
     };
 
+    try {
+      const response = await axios.post(this.apiEndpoint, data, config);
+      return response.data.choices[0].message.content.trim();
+    } catch (error) {
+      console.log(error);
+    }
+
     const response = await axios.post(this.apiEndpoint, data, config);
-    return response.data.choices.map((choice) => choice.text.trim());
+    return response.data.choices[0].message.content.trim();
   }
 }
