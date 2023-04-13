@@ -34,9 +34,9 @@ describe('AppService (e2e)', () => {
     it('should read files from a folder, process content, and send messages to GPT-3.5', async () => {
       // Prepare
       const folderPath =
-        '/Users/diego.delima/Documents/projects/rest-api-node-typescript';
+        '/Users/diego.delima/Documents/projects/idp-dazn-pwd-based/src/provider';
       const question =
-        'where is lesson updated in the code? Class and function name?';
+        'I want you to tell me about this module and what it does and its purpose to the project';
 
       // Execute
       try {

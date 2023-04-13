@@ -15,6 +15,7 @@ export class DirectoryReaderService {
     this.fileFilterService = new FileFilterService(
       ['.js', '.ts', '.jsx', '.tsx', '.md', '.txt', '.html'],
       ['node_modules', '.git', '.idea'],
+      ['.spec.ts'],
     );
   }
 

@@ -1,25 +1,36 @@
-import * as path from 'path';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class FileFilterService {
-  private readonly relevantExtensions: string[];
-  private readonly excludedDirectories: string[];
+  constructor(
+    private readonly allowedExtensions: string[],
+    private readonly excludedFolders: string[],
+    private readonly excludedExtensions: string[] = [],
+  ) {}
 
-  constructor(relevantExtensions: string[], excludedDirectories: string[]) {
-    this.relevantExtensions = relevantExtensions;
-    this.excludedDirectories = excludedDirectories;
+  filterFiles(filePaths: string[]): string[] {
+    return filePaths.filter((filePath) => {
+      const fileExtension = this.getFileExtension(filePath);
+      const folderName = this.getFolderName(filePath);
+
+      // Ignore files with excluded extensions
+      if (this.excludedExtensions.includes(fileExtension)) {
+        return false;
+      }
+
+      return (
+        this.allowedExtensions.includes(fileExtension) &&
+        !this.excludedFolders.includes(folderName)
+      );
+    });
   }
 
-  public filterFiles(files: string[]): string[] {
-    const filteredFiles = files.filter((file) => {
-      const extension = path.extname(file);
-      const isRelevantExtension = this.relevantExtensions.includes(extension);
-      const isExcludedDirectory = this.excludedDirectories.some((dir) =>
-        file.includes(`${path.sep}${dir}${path.sep}`),
-      );
+  private getFileExtension(filePath: string): string {
+    return filePath.slice(filePath.lastIndexOf('.'));
+  }
 
-      return isRelevantExtension && !isExcludedDirectory;
-    });
-
-    return filteredFiles;
+  private getFolderName(filePath: string): string {
+    const pathParts = filePath.split('/');
+    return pathParts[pathParts.length - 2];
   }
 }

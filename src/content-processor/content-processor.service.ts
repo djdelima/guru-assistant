@@ -38,7 +38,7 @@ export class ContentProcessorService {
     );
 
     // Set the maxTokens based on your GPT-3.5 model's limit
-    const maxTokens = 4096;
+    const maxTokens = 4060;
     const inputChunks = this.splitInputIntoChunks(combinedInput, maxTokens);
 
     return inputChunks.map((chunk) => this.formatMessage(chunk));
